@@ -1,204 +1,41 @@
 #include <iostream>
 #include <fstream>
-#define DIM 20
+#include <cstdlib>
+#include <ctype.h>
+#include "funzioni.hpp"
+
 using namespace std;
-const string archivio="squadre.dat";int n=0;
-struct squadra
-{
-    string nome;
-    int punti;
-    string capocannoniere;
-    int goal;
-}
-s,gruppo[DIM];
 
-void inserimento()
-{
-    string a;
-             do{
-        fflush(stdin);
-        cout << "Inserisci squadra:";
-       getline(cin,gruppo[n].nome);
-       cout << "Inserisci punti:";
-       cin>>gruppo[n].punti;
-       fflush(stdin);
-       cout << "Inserisci capocannoniere:";
-       getline(cin,gruppo[n].capocannoniere);
-       cout << "Inserisci numero goal:";
-       cin>>gruppo[n].goal;
-       n++;
-   if(n!=DIM)
-        {
-        cout<<"Premere a per inserire la prossima squadra, altrimenti q: ";
-        cin>>a;
-    }
-    else
-        a="q";
-    }while(a=="a");
-
-}
-void scrivi()
-{
-    ofstream scrivi;
-
-     scrivi.open(archivio.c_str(),ios::app | ios::binary);
-
-    if(!scrivi)
-
-        cout << "errore in apertura del file "<<endl;
-    else
-        {
-        for(int i=0 ; i<n ; i++)
-
-            scrivi.write((char*)&gruppo,sizeof(gruppo));
-
-
-    }
-   scrivi.close();
-
-}
-void leggi()
-{
-
-    int c=0;
-    string linea;
-    fstream leggi;
-    leggi.open(archivio.c_str(),ios::in | ios::binary);
-
-    if(!leggi)
-
-        cout << "errore in apertura del file "<<endl;
-       else
-       {
-
-        while(leggi.read((char*)&gruppo,sizeof(gruppo)));
-       {
-            cout<<"nome "<<gruppo[c].nome<<endl;
-            cout<<"punti "<<gruppo[c].punti<<endl;
-            cout<<"capocannoniere "<<gruppo[c].capocannoniere<<endl;
-            cout<<"goal "<<gruppo[c].goal<<endl;
-
-
-         c++;
-        }
-
-
-    }
-    leggi.close();
-         fflush(stdin);
-
-}
-
-void classifica_punti()
-{
-
-    int temp;
-    string temp1;
-
-        for(int b=0; b<=n ; b++)
-        {
-            for(int c=b+1 ; c<n ; c++)
-            {
-                if(gruppo[b].punti < gruppo[c].punti)
-                {
-                    temp1=gruppo[b].nome;
-                    gruppo[b].nome = gruppo[c].nome;
-                    gruppo[c].nome = temp1;
-
-                     temp=gruppo[b].punti;
-                    gruppo[b].punti = gruppo[c].punti;
-                    gruppo[c].punti = temp;
-
-                     temp1=gruppo[b].capocannoniere;
-                    gruppo[b].capocannoniere = gruppo[c].capocannoniere;
-                    gruppo[c].capocannoniere = temp1;
-
-                     temp=gruppo[b].goal;
-                    gruppo[b].goal = gruppo[c].goal;
-                    gruppo[c].goal = temp;
+    /*! \mainpage <CENTER> riceerca del codice </CENTER>
+    * \author <B> colella valentina</B>
+    * \version <B> V1.0 </B>
+    * \date <B> Consegna progetto:  08/04/2021 </B>
+    *
+    * \section caratteristiche CARATTERISTICHE DEL PROGETTO
+    *
+    *  Il software permette di:
+    * - fare l'inserimento
+    * - scrivere una struct e stamparla
+    * - fare la classifica dei punti ed dei marcatori
+    * - ricercare il codice
+    *
+    *\section UML DIAGRAMMA UML DEL PROGETTO
+    * <IMG SRC = "uml.jpg" ALT = "Diagramma UML del progetto"/>
+    *
+    *\section CLASS DIAGRAMMA DELLE CLASSI PRESENTI NEL PROGETTO
+    *<IMG SRC = "classi.jpg" ALT = "Diagramma delle classi del progetto"/>
+    */
 
 
 
-
-                }
-            }
-        }
-
-    cout<< " la classifica dei punti e' : "<<endl<<endl;
-    for(int x=0;x<n;x++)
-    {
-       cout << gruppo[x].punti  << "   " << gruppo[x].nome  <<endl<<endl<<endl;
-    }
-
-}
-
-void classifica_marcatori()
-{
-    int temp;
-    string temp1;
-
-        for(int b=0; b<=n ; b++)
-        {
-            for(int c=b+1 ; c<n ; c++)
-            {
-                if(gruppo[b].goal < gruppo[c].goal)
-                {
-                    temp1=gruppo[b].nome;
-                    gruppo[b].nome = gruppo[c].nome;
-                    gruppo[c].nome = temp1;
-
-                     temp=gruppo[b].punti;
-                    gruppo[b].punti = gruppo[c].punti;
-                    gruppo[c].punti = temp;
-
-                     temp1=gruppo[b].capocannoniere;
-                    gruppo[b].capocannoniere = gruppo[c].capocannoniere;
-                    gruppo[c].capocannoniere = temp1;
-
-                     temp=gruppo[b].goal;
-                    gruppo[b].goal = gruppo[c].goal;
-                    gruppo[c].goal = temp;
+ifstream inp;
+ofstream outp;
 
 
-                }
-            }
-        }
-
-    cout<< " la classifica dei marcatori è:  "<<endl<<endl;
-    for(int x=0;x<n;x++)
-    {
-       cout << gruppo[x].capocannoniere  << "  ha fatto  "<< gruppo[x].goal  <<" goal "<<endl<<endl<<endl;
-    }
-
-}
-
-void ricerca()
-{
-    int cod;
-    long cont;
-    int scelta;
-
-    fstream codice;
-    codice.open(archivio.c_str(),ios::in | ios::binary);
-    if(!codice)
-        cout<<"Errore nell'apertura del file";
-
-    else{
-        cout<<"Inserisci il codice da cercare:";
-        cin>>cod;
-        cont=(cod-1)*(sizeof(gruppo));
-        codice.seekg(cont);
-        codice.read((char*)&gruppo,sizeof(gruppo));
-        cout<<"Nome:"<<gruppo[cont].nome<<endl;
-        cout<<"Punti:"<<gruppo[cont].punti<<endl;
-        cout<<"Capocannoniere:"<<gruppo[cont].capocannoniere<<endl;
-        cout<<"Goal:"<<gruppo[cont].goal<<endl<<endl;
-}
-}
 int main()
 {
 
-
+    //! \brief main dove si sceglie cosa far fare al programma
     int scelta;
 
     do
